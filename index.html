@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elias Intelligence Research</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090c;--s1:#0f1318;--s2:#161b22;--b:#1e2530;--g:#00e5b0;--r:#ff4d6d;--y:#ffd166;--p:#7c6fff;--t:#e8eaf0;--t2:#8892a0;--t3:#3d4a5c;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t);font-family:'JetBrains Mono',monospace;font-size:12px;min-height:100vh;}
+.hdr{background:var(--s1);border-bottom:1px solid var(--b);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100;}
+.hdr h1{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--g);}
+.hdr p{color:var(--t2);font-size:10px;margin-top:2px;text-transform:uppercase;letter-spacing:1px;}
+.badges{display:flex;gap:5px;flex-wrap:wrap;}
+.badge{padding:3px 8px;border-radius:3px;font-size:9px;text-transform:uppercase;letter-spacing:.5px;}
+.bg{background:rgba(0,229,176,.1);color:var(--g);border:1px solid rgba(0,229,176,.25);}
+.by{background:rgba(255,209,102,.1);color:var(--y);border:1px solid rgba(255,209,102,.25);}
+.br{background:rgba(255,77,109,.1);color:var(--r);border:1px solid rgba(255,77,109,.25);}
+.bp{background:rgba(124,111,255,.1);color:var(--p);border:1px solid rgba(124,111,255,.25);}
+.main{padding:22px 28px;}
+.waiting{text-align:center;padding:80px 20px;color:var(--t3);}
+.waiting h2{font-family:'Syne',sans-serif;font-size:22px;color:var(--t2);margin-bottom:12px;}
+.waiting p{font-size:11px;line-height:1.8;max-width:480px;margin:0 auto;}
+.info{background:rgba(0,229,176,.05);border:1px solid rgba(0,229,176,.2);border-radius:5px;padding:11px 15px;margin-bottom:18px;font-size:11px;color:var(--t2);line-height:1.8;}
+.info strong{color:var(--g);}
+.tabs{display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--b);}
+.tab{padding:8px 16px;cursor:pointer;font-size:11px;color:var(--t3);border-bottom:2px solid transparent;transition:all .15s;margin-bottom:-1px;}
+.tab:hover{color:var(--t2);}
+.tab.act{color:var(--g);border-bottom-color:var(--g);}
+.tab-content{display:none;}
+.tab-content.act{display:block;}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;margin-bottom:20px;}
+.stat{background:var(--s1);border:1px solid var(--b);border-radius:5px;padding:11px 13px;}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:3px;}
+.sv{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;}
+.ss{font-size:10px;color:var(--t2);margin-top:2px;}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;align-items:center;}
+.fl{color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:1px;}
+.fb{padding:4px 10px;border:1px solid var(--b);background:transparent;color:var(--t2);border-radius:3px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:11px;transition:all .15s;}
+.fb:hover,.fb.act{border-color:var(--g);color:var(--g);background:rgba(0,229,176,.08);}
+.fb.act-r{border-color:var(--r);color:var(--r);background:rgba(255,77,109,.08);}
+.sec{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--t);margin-bottom:13px;padding-bottom:7px;border-bottom:1px solid var(--b);}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:13px;}
+.mc{background:var(--s1);border:1px solid var(--b);border-radius:6px;overflow:hidden;}
+.mch{padding:11px 15px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;border-bottom:1px solid var(--b);transition:background .15s;}
+.mch:hover{background:rgba(0,229,176,.03);}
+.mt{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;}
+.md{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;}
+.dl{color:var(--g);background:rgba(0,229,176,.12);}
+.ds{color:var(--r);background:rgba(255,77,109,.12);}
+.trend-up{color:var(--g);background:rgba(0,229,176,.08);border:1px solid rgba(0,229,176,.2);padding:2px 6px;border-radius:3px;font-size:9px;}
+.trend-dn{color:var(--r);background:rgba(255,77,109,.08);border:1px solid rgba(255,77,109,.2);padding:2px 6px;border-radius:3px;font-size:9px;}
+.trend-nt{color:var(--y);background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.2);padding:2px 6px;border-radius:3px;font-size:9px;}
+.mp{font-size:13px;font-weight:600;}
+.mdt{padding:6px 15px;font-size:10px;color:var(--t2);background:rgba(0,0,0,.2);border-bottom:1px solid var(--b);}
+.mb{display:none;}
+.mb.open{display:block;}
+.ms{padding:11px 15px;font-size:10px;color:var(--t2);line-height:1.8;border-bottom:1px solid var(--b);}
+.cs-bar{margin:10px 15px;background:var(--s2);border-radius:4px;overflow:hidden;height:6px;}
+.cs-fill{height:100%;border-radius:4px;transition:width .3s;}
+.cs-label{display:flex;justify-content:space-between;padding:0 15px 8px;font-size:9px;color:var(--t3);}
+.tb{margin:9px 15px 11px;background:rgba(255,209,102,.05);border:1px solid rgba(255,209,102,.2);border-radius:4px;padding:9px 11px;}
+.tt{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--y);margin-bottom:5px;}
+.tr{display:flex;gap:13px;flex-wrap:wrap;margin-bottom:5px;}
+.ti label{display:block;font-size:9px;color:var(--t3);text-transform:uppercase;}
+.ti span{font-size:11px;color:var(--t);}
+.tc{font-size:10px;color:var(--y);}
+.tw{overflow-x:auto;padding:0 15px 13px;}
+table{width:100%;border-collapse:collapse;font-size:10px;}
+th{padding:4px 7px;text-align:left;color:var(--t3);font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--b);font-weight:400;}
+td{padding:3px 7px;border-bottom:1px solid rgba(30,37,48,.5);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+.ve{color:var(--r);}.vh{color:var(--y);}.vn{color:var(--t2);}.vl{color:var(--t3);}
+.cu{color:var(--g);}.cd{color:var(--r);}.cn{color:var(--y);}
+.none{padding:18px;text-align:center;color:var(--t3);grid-column:1/-1;}
+/* Trend section */
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:20px;}
+.trend-card{background:var(--s1);border:1px solid var(--b);border-radius:6px;padding:14px 16px;}
+.trend-ticker{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;margin-bottom:8px;}
+.trend-state{font-size:11px;font-weight:600;padding:4px 10px;border-radius:4px;display:inline-block;margin-bottom:10px;}
+.trend-detail{font-size:10px;color:var(--t2);line-height:1.8;}
+/* Backtest section */
+.bt-summary{background:var(--s1);border:1px solid var(--b);border-radius:6px;padding:16px 18px;margin-bottom:18px;}
+.bt-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:12px;color:var(--t);}
+.bt-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+.bt-stat{padding:9px 11px;background:var(--s2);border-radius:4px;border:1px solid var(--b);}
+.bt-label{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);margin-bottom:3px;}
+.bt-val{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;}
+::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:var(--b);border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div><h1>ELIAS INTELLIGENCE RESEARCH</h1><p id="genTime">Awaiting data...</p></div>
+  <div class="badges">
+    <span class="badge bg" id="bdgStocks">—</span>
+    <span class="badge by" id="bdgPeriod">2024-2025</span>
+    <span class="badge br" id="bdgMoves">—</span>
+    <span class="badge bp">Wealth Within Trend</span>
+  </div>
+</div>
+<div class="main" id="mainContent">
+  <div class="waiting" id="waitingMsg">
+    <h2>Awaiting Analysis Data</h2>
+    <p>Run the Colab notebook to fetch data and push results here. This page will automatically display the latest analysis once data is available.</p>
+  </div>
+</div>
+
+<script>
+// ── Load data from results.json in same repo ──────────────────────────────────
+async function loadData() {
+  try {
+    const resp = await fetch('./results.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('No data yet');
+    const D = await resp.json();
+    renderDashboard(D);
+  } catch(e) {
+    document.getElementById('waitingMsg').style.display = 'block';
+  }
+}
+
+function renderDashboard(D) {
+  document.getElementById('waitingMsg').style.display = 'none';
+  document.getElementById('genTime').textContent = 'Generated: ' + (D.generated_at || '—') + ' — Raw OHLCV — No TA Bias';
+
+  const allM = Object.values(D.stocks || {}).flatMap(s => (s.moves||[]).map(m => ({...m.move, label:s.label, role:s.role, trend_state:m.trend_state||'neutral', compression_score:m.compression_score||0, summary:m.summary||'', pre_days:m.pre_days||[], trigger_day:m.trigger_day||{}})));
+  const longs = allM.filter(m=>m.direction==='LONG').length;
+  const shorts = allM.filter(m=>m.direction==='SHORT').length;
+  const avg = allM.length ? (allM.reduce((s,m)=>s+Math.abs(m.pct_move),0)/allM.length).toFixed(1) : 0;
+
+  document.getElementById('bdgStocks').textContent = Object.keys(D.stocks||{}).length + ' Stocks';
+  document.getElementById('bdgMoves').textContent = allM.length + ' Moves';
+
+  const main = document.getElementById('mainContent');
+  main.innerHTML = `
+    <div class="tabs">
+      <div class="tab act" onclick="showTab('moves',this)">Structural Moves</div>
+      <div class="tab" onclick="showTab('trend',this)">Trend Analysis</div>
+      <div class="tab" onclick="showTab('backtest',this)">Backtest Results</div>
+    </div>
+
+    <!-- MOVES TAB -->
+    <div class="tab-content act" id="tab-moves">
+      <div class="info"><strong>Methodology:</strong> Moves >=15% within 30 days. 15-day pre-move window. Volume baseline = 20-day rolling avg. <strong>Zero TA indicators.</strong> Trend state determined by Wealth Within swing high/low definition on weekly data.</div>
+      <div class="stats">
+        <div class="stat"><div class="sl">Total Moves</div><div class="sv" style="color:var(--g)">${allM.length}</div><div class="ss">>=15% in 30 days</div></div>
+        <div class="stat"><div class="sl">Long</div><div class="sv" style="color:var(--g)">${longs}</div><div class="ss">${allM.length?(longs/allM.length*100).toFixed(0):'0'}% of total</div></div>
+        <div class="stat"><div class="sl">Short</div><div class="sv" style="color:var(--r)">${shorts}</div><div class="ss">${allM.length?(shorts/allM.length*100).toFixed(0):'0'}% of total</div></div>
+        <div class="stat"><div class="sl">Avg Move</div><div class="sv" style="color:var(--y)">${avg}%</div><div class="ss">across all moves</div></div>
+        ${D.compression_stats ? `<div class="stat"><div class="sl">Avg Compression Score</div><div class="sv" style="color:var(--p)">${D.compression_stats.avg_score||'—'}</div><div class="ss">0-100 scale</div></div>` : ''}
+      </div>
+      <div class="filters">
+        <span class="fl">Direction:</span>
+        <button class="fb act" onclick="fil('dir','all',this)">All</button>
+        <button class="fb" onclick="fil('dir','LONG',this)">Long</button>
+        <button class="fb" onclick="fil('dir','SHORT',this)">Short</button>
+        <span class="fl" style="margin-left:10px">Trend:</span>
+        <button class="fb act" onclick="fil('trend','all',this)">All</button>
+        <button class="fb" onclick="fil('trend','uptrend',this)">Uptrend</button>
+        <button class="fb" onclick="fil('trend','downtrend',this)">Downtrend</button>
+        <button class="fb" onclick="fil('trend','neutral',this)">Neutral</button>
+        <span class="fl" style="margin-left:10px">Stock:</span>
+        <button class="fb act" id="btn-all" onclick="fil('stock','all',this)">All</button>
+        <span id="sbts">${Object.keys(D.stocks||{}).map(l=>`<button class="fb" onclick="fil('stock','${l}',this)">${l}</button>`).join('')}</span>
+      </div>
+      <div class="sec">Qualifying Moves — Click to expand pre-move detail</div>
+      <div class="grid" id="movesGrid"></div>
+    </div>
+
+    <!-- TREND TAB -->
+    <div class="tab-content" id="tab-trend">
+      <div class="info"><strong>Wealth Within Trend Definition:</strong> Uptrend = series of higher swing highs AND higher swing lows on weekly chart (minimum 3 HH + 3 HL). Downtrend = series of lower swing highs AND lower swing lows (minimum 3 LH + 3 LL). Neutral = transitioning or insufficient swing data.</div>
+      <div class="sec">Current Trend State per Stock</div>
+      <div class="trend-grid" id="trendGrid"></div>
+      <div class="sec" style="margin-top:20px">Trend Alignment with Moves</div>
+      <div id="trendAlignment"></div>
+    </div>
+
+    <!-- BACKTEST TAB -->
+    <div class="tab-content" id="tab-backtest">
+      <div class="info"><strong>Backtest Methodology:</strong> Scan every day in 2024-2025 for compression signal. For each signal day, record outcome over next 30 days. Measure success rate with trend-alignment filter applied.</div>
+      <div id="backtestContent"></div>
+    </div>
+  `;
+
+  window._allM = allM;
+  window._D = D;
+  window._aDir = 'all';
+  window._aSt = 'all';
+  window._aTrend = 'all';
+
+  renderMoves();
+  renderTrend();
+  renderBacktest();
+}
+
+function renderMoves() {
+  const allM = window._allM || [];
+  const f = allM.filter(m =>
+    (window._aDir==='all'||m.direction===window._aDir) &&
+    (window._aSt==='all'||m.label===window._aSt) &&
+    (window._aTrend==='all'||m.trend_state===window._aTrend)
+  );
+
+  if(!f.length){document.getElementById('movesGrid').innerHTML='<div class="none">No moves match filters.</div>';return;}
+
+  document.getElementById('movesGrid').innerHTML = f.map((move,i) => {
+    const D = window._D;
+    const sd = D.stocks[move.label];
+    const am = (sd.moves||[]).find(m=>m.move.start_date===move.start_date&&m.move.direction===move.direction);
+    if(!am) return '';
+    const col = move.direction==='LONG'?'var(--g)':'var(--r)';
+    const dc  = move.direction==='LONG'?'dl':'ds';
+    const ps  = (move.pct_move>0?'+':'')+move.pct_move+'%';
+    const td  = am.trigger_day||{};
+    const trendClass = move.trend_state==='uptrend'?'trend-up':move.trend_state==='downtrend'?'trend-dn':'trend-nt';
+    const trendLabel = move.trend_state==='uptrend'?'↑ Uptrend':move.trend_state==='downtrend'?'↓ Downtrend':'→ Neutral';
+    const cs = move.compression_score||0;
+    const csColor = cs>=70?'var(--g)':cs>=50?'var(--y)':'var(--r)';
+
+    const rows = (am.pre_days||[]).map(d => {
+      const vc = !d.vol_ratio?'vn':d.vol_ratio>=3?'ve':d.vol_ratio>=1.5?'vh':d.vol_ratio<0.7?'vl':'vn';
+      const cc = (d.candle_desc||'').includes('strong up')||(d.candle_desc||'').includes('moderate up')?'cu':(d.candle_desc||'').includes('strong down')||(d.candle_desc||'').includes('moderate down')?'cd':'cn';
+      return `<tr><td style="color:var(--t3);font-size:9px">${d.day_offset}</td><td>${d.date}</td><td>${d.close}</td><td class="${vc}">${d.vol_ratio?d.vol_ratio+'x':'--'}</td><td class="${vc}" style="font-size:9px">${d.volume_desc||''}</td><td class="${cc}" style="font-size:9px">${d.candle_desc||''}</td></tr>`;
+    }).join('');
+
+    return `<div class="mc" data-dir="${move.direction}" data-st="${move.label}" data-trend="${move.trend_state}">
+      <div class="mch" onclick="tog(${i})">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="mt" style="color:${col}">${move.label}</span>
+          <span class="md ${dc}">${move.direction}</span>
+          <span class="${trendClass}">${trendLabel}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="mp" style="color:${col}">${ps}</span>
+          <span id="cv-${i}" style="color:var(--t3)">+</span>
+        </div>
+      </div>
+      <div class="mdt">${move.start_date} → ${move.end_date} &nbsp;·&nbsp; $${move.start_price} → $${move.end_price} &nbsp;·&nbsp; ${move.trading_days} days</div>
+      <div class="mb" id="mb-${i}">
+        <div class="cs-label"><span>Compression Score</span><span style="color:${csColor}">${cs}/100</span></div>
+        <div class="cs-bar"><div class="cs-fill" style="width:${cs}%;background:${csColor}"></div></div>
+        <div class="ms">${am.summary||''}</div>
+        <div class="tb">
+          <div class="tt">Trigger Day — ${td.date||''}</div>
+          <div class="tr">
+            <div class="ti"><label>Open</label><span>$${td.open||''}</span></div>
+            <div class="ti"><label>High</label><span>$${td.high||''}</span></div>
+            <div class="ti"><label>Low</label><span>$${td.low||''}</span></div>
+            <div class="ti"><label>Close</label><span>$${td.close||''}</span></div>
+            <div class="ti"><label>Vol Ratio</label><span>${td.vol_ratio?td.vol_ratio+'x':'--'}</span></div>
+          </div>
+          <div class="tc">${td.candle_desc||''}</div>
+        </div>
+        <div class="tw"><table><thead><tr><th>Day</th><th>Date</th><th>Close</th><th>Vol Ratio</th><th>Vol Character</th><th>Candle Character</th></tr></thead><tbody>${rows}</tbody></table></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTrend() {
+  const D = window._D;
+  if(!D || !D.trends) return;
+  document.getElementById('trendGrid').innerHTML = Object.entries(D.trends).map(([label, t]) => {
+    const stateClass = t.state==='uptrend'?'trend-up':t.state==='downtrend'?'trend-dn':'trend-nt';
+    const stateLabel = t.state==='uptrend'?'↑ UPTREND':t.state==='downtrend'?'↓ DOWNTREND':'→ NEUTRAL';
+    return `<div class="trend-card">
+      <div class="trend-ticker" style="color:var(--g)">${label}</div>
+      <span class="trend-state ${stateClass}">${stateLabel}</span>
+      <div class="trend-detail">
+        <div>Higher Highs: <strong style="color:var(--t)">${t.hh_count||0}</strong> &nbsp; Higher Lows: <strong style="color:var(--t)">${t.hl_count||0}</strong></div>
+        <div>Lower Highs: <strong style="color:var(--t)">${t.lh_count||0}</strong> &nbsp; Lower Lows: <strong style="color:var(--t)">${t.ll_count||0}</strong></div>
+        <div style="margin-top:6px;color:var(--t2)">${t.description||''}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Trend alignment stats
+  const allM = window._allM||[];
+  const upMoves    = allM.filter(m=>m.trend_state==='uptrend');
+  const dnMoves    = allM.filter(m=>m.trend_state==='downtrend');
+  const ntMoves    = allM.filter(m=>m.trend_state==='neutral');
+  const upLong     = upMoves.filter(m=>m.direction==='LONG').length;
+  const dnShort    = dnMoves.filter(m=>m.direction==='SHORT').length;
+  const alignment  = allM.length ? ((upLong+dnShort)/allM.length*100).toFixed(1) : 0;
+
+  document.getElementById('trendAlignment').innerHTML = `
+    <div class="bt-summary">
+      <div class="bt-title">Trend-Direction Alignment</div>
+      <div class="bt-stats">
+        <div class="bt-stat"><div class="bt-label">Uptrend Moves</div><div class="bt-val" style="color:var(--g)">${upMoves.length}</div></div>
+        <div class="bt-stat"><div class="bt-label">Long in Uptrend</div><div class="bt-val" style="color:var(--g)">${upLong} / ${upMoves.length}</div></div>
+        <div class="bt-stat"><div class="bt-label">Downtrend Moves</div><div class="bt-val" style="color:var(--r)">${dnMoves.length}</div></div>
+        <div class="bt-stat"><div class="bt-label">Short in Downtrend</div><div class="bt-val" style="color:var(--r)">${dnShort} / ${dnMoves.length}</div></div>
+        <div class="bt-stat"><div class="bt-label">Neutral Moves</div><div class="bt-val" style="color:var(--y)">${ntMoves.length}</div></div>
+        <div class="bt-stat"><div class="bt-label">Trend Alignment Rate</div><div class="bt-val" style="color:var(--p)">${alignment}%</div></div>
+      </div>
+    </div>`;
+}
+
+function renderBacktest() {
+  const D = window._D;
+  if(!D || !D.backtest) {
+    document.getElementById('backtestContent').innerHTML = '<div class="none" style="padding:40px">Backtest data not yet available. Run the full analysis notebook.</div>';
+    return;
+  }
+  const bt = D.backtest;
+  document.getElementById('backtestContent').innerHTML = `
+    <div class="bt-summary">
+      <div class="bt-title">Compression Signal Backtest — All Signals Fired</div>
+      <div class="bt-stats">
+        <div class="bt-stat"><div class="bt-label">Total Signals</div><div class="bt-val" style="color:var(--g)">${bt.total_signals||0}</div></div>
+        <div class="bt-stat"><div class="bt-label">Success Rate (any move)</div><div class="bt-val" style="color:var(--g)">${bt.success_rate_any||'—'}%</div></div>
+        <div class="bt-stat"><div class="bt-label">With Trend Filter</div><div class="bt-val" style="color:var(--p)">${bt.success_rate_trend_aligned||'—'}%</div></div>
+        <div class="bt-stat"><div class="bt-label">Avg Move After Signal</div><div class="bt-val" style="color:var(--y)">${bt.avg_move_after||'—'}%</div></div>
+        <div class="bt-stat"><div class="bt-label">Avg Days to Move</div><div class="bt-val" style="color:var(--y)">${bt.avg_days_to_move||'—'}</div></div>
+        <div class="bt-stat"><div class="bt-label">False Signal Rate</div><div class="bt-val" style="color:var(--r)">${bt.false_signal_rate||'—'}%</div></div>
+      </div>
+    </div>
+    ${bt.by_stock ? `
+    <div class="sec">Results by Stock</div>
+    <div class="grid">${Object.entries(bt.by_stock).map(([label,s])=>`
+      <div class="mc">
+        <div class="mch" style="cursor:default">
+          <span class="mt" style="color:var(--g)">${label}</span>
+          <span style="font-size:10px;color:var(--t2)">${s.total_signals||0} signals</span>
+        </div>
+        <div style="padding:10px 15px;font-size:10px;color:var(--t2);line-height:1.9">
+          <div>Success rate: <strong style="color:var(--g)">${s.success_rate||'—'}%</strong></div>
+          <div>With trend filter: <strong style="color:var(--p)">${s.trend_aligned_rate||'—'}%</strong></div>
+          <div>Avg move: <strong style="color:var(--y)">${s.avg_move||'—'}%</strong></div>
+        </div>
+      </div>`).join('')}
+    </div>` : ''}`;
+}
+
+function tog(i) {
+  const b=document.getElementById('mb-'+i);
+  const c=document.getElementById('cv-'+i);
+  b.classList.toggle('open',!b.classList.contains('open'));
+  c.textContent=b.classList.contains('open')?'-':'+';
+}
+
+function fil(type,val,btn) {
+  if(type==='dir'){window._aDir=val;document.querySelectorAll('.filters .fb').forEach(b=>{if(['All','Long','Short'].includes(b.textContent))b.classList.remove('act','act-r');});}
+  else if(type==='trend'){window._aTrend=val;document.querySelectorAll('.filters .fb').forEach(b=>{if(['All','Uptrend','Downtrend','Neutral'].includes(b.textContent))b.classList.remove('act','act-r');});}
+  else{window._aSt=val;document.querySelectorAll('#btn-all,#sbts .fb').forEach(b=>b.classList.remove('act','act-r'));}
+  btn.classList.add('act');
+  renderMoves();
+}
+
+function showTab(name,btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('act'));
+  document.getElementById('tab-'+name).classList.add('act');
+  btn.classList.add('act');
+}
+
+loadData();
+</script>
+</body>
+</html>
